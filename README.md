@@ -1,3 +1,3 @@
-Standalone password generator - plain HTML & Javascript, does not rely on any library or external APIs.
+Standalone password generator - plain HTML, CSS & Javascript, does not rely on any library or external APIs.
 
 Features include password length, standard uppercase, lowercase, numbers and special characters, customizable special characters, copy to clipboard...
