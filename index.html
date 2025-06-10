@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Password Generator</title>
+
+    <!-- FAVICON AND PWA ICONS -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNjY3ZWVhO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM3NjRiYTI7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSI+CjxyZWN0IHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgcng9IjYiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik0xNiA4QzEzLjI0IDggMTEgMTAuMjQgMTEgMTNWMTVIOUM4LjQ1IDE1IDcuMTcgMTUgNi41OSAxNS41OUM2IDE2LjE3IDYgMTcuNDUgNiAyMFYyMkM2IDI0LjU1IDYgMjUuODMgNi41OSAyNi40MUM3LjE3IDI3IDguNDUgMjcgMTEgMjdIMjFDMjMuNTUgMjcgMjQuODMgMjcgMjUuNDEgMjYuNDFDMjYgMjUuODMgMjYgMjQuNTUgMjYgMjJWMjBDMjYgMTcuNDUgMjYgMTYuMTcgMjUuNDEgMTUuNTlDMjQuODMgMTUgMjMuNTUgMTUgMjEgMTVIMjFWMTNDMjEgMTAuMjQgMTguNzYgOCAxNiA4WiIgZmlsbD0iI2ZmZmZmZiIvPgo8cGF0aCBkPSJNMTMgMTNDMTMgMTEuMzQgMTQuMzQgMTAgMTYgMTBDMTcuNjYgMTAgMTkgMTEuMzQgMTkgMTNWMTVIMTNWMTNaIiBmaWxsPSIjNjY3ZWVhIi8+CjxjaXJjbGUgY3g9IjE2IiBjeT0iMjEiIHI9IjIiIGZpbGw9IiM2NjdlZWEiLz4KPC9zdmc+Cg==">
+
+    <!-- APPLE TOUCH ICONS FOR iOS HOME SCREEN -->
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgwIiBoZWlnaHQ9IjE4MCIgdmlld0JveD0iMCAwIDE4MCAxODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxkZWZzPgo8bGluZWFyR3JhZGllbnQgaWQ9ImdyYWRpZW50IiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KPHN0b3Agb2Zmc2V0PSIwJSIgc3R5bGU9InN0b3AtY29sb3I6IzY2N2VlYTtzdG9wLW9wYWNpdHk6MSIgLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNzY0YmEyO3N0b3Atb3BhY2l0eToxIiAvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxODAiIGhlaWdodD0iMTgwIiByeD0iNDAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik05MCA0NEM3NC4zIDQ0IDYxLjUgNTYuOCA2MS41IDcyLjVWODJINTFDNDQuNSA4MiA0MC4wIDgyIDM3LjMgODQuN0MzNC41IDg3LjUgMzQuNSA5MiAzNC41IDk4LjVWMTIzQzM0LjUgMTI5LjUgMzQuNSAxMzQgMzcuMyAxMzYuOEM0MC4wIDEzOS41IDQ0LjUgMTM5LjUgNTEgMTM5LjVIMTI5QzEzNS41IDEzOS41IDE0MCAxMzkuNSAxNDIuOCAxMzYuOEMxNDUuNSAxMzQgMTQ1LjUgMTI5LjUgMTQ1LjUgMTIzVjk4LjVDMTQ1LjUgOTIgMTQ1LjUgODcuNSAxNDIuOCA4NC43QzE0MCA4MiAxMzUuNSA4MiAxMjkgODJIMTE4LjVWNzIuNUMxMTguNSA1Ni44IDEwNS43IDQ0IDkwIDQ0WiIgZmlsbD0iI2ZmZmZmZiIvPgo8cGF0aCBkPSJNNzIgNzIuNUM3MiA2Mi40IDgwLjQgNTQgOTAgNTRDOTkuNiA1NCA1NC02Mi40IDEwOCA3Mi41Vjg5SDcyVjcyLjVaIiBmaWxsPSIjNjY3ZWVhIi8+CjxjaXJjbGUgY3g9IjkwIiBjeT0iMTE2LjUiIHI9IjEwIiBmaWxsPSIjNjY3ZWVhIi8+Cjwvc3ZnPgo=">
+
+    <!-- PWA MANIFEST FOR BETTER HOME SCREEN EXPERIENCE -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBhc3N3b3JkIEdlbmVyYXRvciIsCiAgInNob3J0X25hbWUiOiAiUGFzc0dlbiIsCiAgImRlc2NyaXB0aW9uIjogIlNlY3VyZSBwYXNzd29yZCBnZW5lcmF0b3IgLSBDbGllbnQtc2lkZSBvbmx5IiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiM2NjdlZWEiLAogICJ0aGVtZV9jb2xvciI6ICIjNjY3ZWVhIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sO2Jhc2U2NCxQSE4yWnlCM2FXUjBhRDBpTVRnd0lpQm9aV2xuYUhROUlqRTRNQ0luIEhacFpYZENiM2c5SWpBZ01DQXhPREFnTVRnd0lpQm1hV3hzUFNKdWIyNWxJaUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTUzTXk1dmNtY3ZNakF3TUM5emRtY2lQanh3WVhSb0lHUTlJazB4T0RBZ05EUkRNVGcwSUNSMklEWTJMalVnTlRZdU9DQTJOaTQxSURjeUxqVldPREpJTlRGRE5EUXVOaUE0TWlBME1DNHdJRGd5SURNNEQ11UaUE0eiQTNRek0wTGpVZ09EQXVGU000TnlBNE1pQTJNaTQxSURneWJqRXhPQzQxVmpjeUxqVkROamsRJOpjeTQxSURWNExqZ2dOVFESRGNcNDZMalVnTlNVNVdpZUNLellJalpVNUNOVFpqSTJ6UWpGaU1UQTBPrDRNVE15SURVMElEa3dJRFEeSWliZnc5SWltODBNREM0SWl2UGFMVXh0MkV5UlpCQmJNVmd4L2ptRnFNeTNnUVJrL3dCNXgzMUFiZ2hVL0VGVXdVaTJBSFVDSUNzeWV3bkF3aDVBNEJJOUwzTT0iLAogICAgICAic2l6ZXMiOiAiMTgweDe1ODAiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQo=">
+
     <style>
         * {
             margin: 0;
@@ -543,7 +553,7 @@
                 return input.slice(0, 1000);
             }
 
-            // ENHANCED: Rate limiting with better tracking
+            // Rate limiting with better tracking
             function canGenerate() {
                 const now = Date.now();
                 if (now - lastGenTime < CONFIG.RATE_LIMIT) return false;
@@ -576,14 +586,13 @@
                 );
             }
 
-            // ENHANCED: Better placeholder management
+            // Better placeholder management
             function updatePlaceholder() {
                 if (!elements.customSymbols) return;
 
                 const currentValue = elements.customSymbols.value;
                 const hasValue = currentValue.length > 0;
 
-                // Show placeholder only when field is empty and user hasn't explicitly cleared it
                 if (!hasValue && !userHasClearedField) {
                     elements.customSymbols.placeholder = '!@#$%^&*()_+-=[]{}|;:,.<>?';
                 } else if (!hasValue && userHasClearedField) {
@@ -593,7 +602,7 @@
                 }
             }
 
-            // ENHANCED: Copy button state management
+            // Copy button state management
             function updateCopyButtonState() {
                 if (!elements.copyBtn || !elements.passwordText) return;
 
@@ -648,7 +657,6 @@
                         customSymbols: validateInput(elements.customSymbols?.value || '', 'symbols')
                     };
 
-                    // Check if any character type is selected
                     const hasAnyType = config.useUppercase || config.useLowercase || config.useNumbers || config.useSymbols;
 
                     if (!hasAnyType) {
@@ -658,7 +666,6 @@
                         return;
                     }
 
-                    // Special case: if symbols is checked but no custom symbols provided
                     if (config.useSymbols && !config.customSymbols) {
                         setTextContent(elements.passwordText, 'Enter some special characters.');
                         updateStrengthIndicator('');
@@ -666,7 +673,6 @@
                         return;
                     }
 
-                    // Build character pools
                     const pools = [];
                     if (config.useUppercase) pools.push(CHARSET.UPPER);
                     if (config.useLowercase) pools.push(CHARSET.LOWER);
@@ -687,26 +693,21 @@
                         return;
                     }
 
-                    // Generate password
                     const password = new Array(config.length);
                     let position = 0;
 
-                    // Required characters first
                     for (const pool of pools) {
                         if (position >= config.length || !pool.length) break;
                         password[position++] = pool[getSecureRandom(pool.length)];
                     }
 
-                    // Build combined character set
                     let allChars = '';
                     for (const pool of pools) allChars += pool;
 
-                    // Fill remaining positions
                     for (let i = position; i < config.length; i++) {
                         password[i] = allChars[getSecureRandom(allChars.length)];
                     }
 
-                    // Shuffle using Fisher-Yates
                     for (let i = config.length - 1; i > 0; i--) {
                         const j = getSecureRandom(i + 1);
                         if (j < i) {
@@ -730,7 +731,7 @@
                 }
             }
 
-            // Strength calculation with stable layout
+            // Strength calculation
             function updateStrengthIndicator(password) {
                 if (!elements.strengthBar || !elements.strengthText) return;
 
@@ -763,16 +764,14 @@
                 }
             }
 
-            // ENHANCED: Copy function with better error handling
+            // Copy function
             async function copyPassword() {
                 const displayedText = elements.passwordText?.textContent;
 
-                // If error is showing, don't auto-generate - let user do it manually
                 if (isErrorMessage(displayedText)) {
                     return;
                 }
 
-                // If no valid password is displayed, generate one first
                 if (!isValidPassword(displayedText)) {
                     generatePassword();
                     return;
@@ -782,7 +781,6 @@
                     if (navigator.clipboard?.writeText) {
                         await navigator.clipboard.writeText(displayedText);
                     } else {
-                        // Fallback for older browsers
                         const textarea = document.createElement('textarea');
                         textarea.value = displayedText;
                         textarea.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
@@ -825,7 +823,6 @@
                     userHasClearedField = false;
                     updatePlaceholder();
 
-                    // Clear error message completely
                     const currentText = elements.passwordText?.textContent;
                     if (currentText && isErrorMessage(currentText)) {
                         setTextContent(elements.passwordText, '');
@@ -845,7 +842,6 @@
                     });
                 }
 
-                // Auto-generate for these controls
                 const autoGenerateIds = ['length', 'uppercase', 'lowercase', 'numbers', 'symbols'];
                 for (const id of autoGenerateIds) {
                     if (elements[id]) {
@@ -853,7 +849,6 @@
                     }
                 }
 
-                // FIXED: Custom symbols input with error clearing
                 if (elements.customSymbols) {
                     elements.customSymbols.addEventListener('input', function() {
                         const originalValue = this.value;
@@ -866,10 +861,8 @@
                             this.setSelectionRange(newPos, newPos);
                         }
 
-                        // FIXED: Clear error message when user enters valid characters
                         const currentDisplayText = elements.passwordText?.textContent;
                         if (currentDisplayText && isErrorMessage(currentDisplayText)) {
-                            // If user has entered valid characters, clear the error
                             if (validated.length > 0) {
                                 setTextContent(elements.passwordText, '');
                                 updateStrengthIndicator('');
@@ -877,11 +870,9 @@
                             }
                         }
 
-                        // Track if user manually cleared the field
                         if (validated === '' && originalValue === '') {
                             userHasClearedField = true;
                         } else if (validated.length > 0) {
-                            // User typed something valid, reset the cleared flag
                             userHasClearedField = false;
                         }
 
@@ -894,7 +885,6 @@
                 if (elements.copyBtn) elements.copyBtn.addEventListener('click', copyPassword);
                 if (elements.resetBtn) elements.resetBtn.addEventListener('click', resetSpecialCharacters);
 
-                // Cleanup listeners
                 document.addEventListener('visibilitychange', () => {
                     if (document.hidden && clearTimer) {
                         clearTimeout(clearTimer);
