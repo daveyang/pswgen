@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 32px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .label-with-value {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .length-value {
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .length-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .length-slider {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            appearance: none;
+        }
+
+        .length-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .length-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .input-with-button {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .special-chars-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .special-chars-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .reset-btn, .btn {
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .reset-btn {
+            padding: 12px 16px;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+
+        .reset-btn:hover:not(:disabled) {
+            background: #edf2f7;
+            border-color: #cbd5e0;
+        }
+
+        .reset-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        .reset-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .password-output {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            word-break: break-all;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+
+        .password-output.copied {
+            border-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .strength-indicator {
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 12px;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .strength-weak { background: #f56565; }
+        .strength-fair { background: #ed8936; }
+        .strength-good { background: #ecc94b; }
+        .strength-strong { background: #48bb78; }
+        .strength-very-strong { background: #38a169; }
+
+        .strength-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            min-height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #cbd5e0;
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .copy-feedback {
+            position: absolute;
+            top: -30px;
+            right: 0;
+            background: #48bb78;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 400;
+        }
+
+        .copyright a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .copyright a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 24px;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .length-container {
+                margin-top: 8px;
+            }
+
+            .input-with-button {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .reset-btn {
+                margin-top: 8px;
+            }
+
+            .copyright {
+                margin-top: 15px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Password Generator</h1>
+
+        <div class="form-group">
+            <div class="label-with-value">
+                <label for="length">Password Length</label>
+                <span class="length-value" id="lengthDisplay">16</span>
+            </div>
+            <div class="length-container">
+                <input type="range" id="length" class="length-slider" min="4" max="128" value="16">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Character Types</label>
+            <div class="checkbox-group">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="uppercase" checked>
+                    <label for="uppercase">Uppercase (A-Z)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="lowercase" checked>
+                    <label for="lowercase">Lowercase (a-z)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="numbers" checked>
+                    <label for="numbers">Numbers (0-9)</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="symbols" checked>
+                    <label for="symbols">Special Characters</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="customSymbols">Custom Special Characters</label>
+            <div class="input-with-button">
+                <input type="text" id="customSymbols" class="special-chars-input"
+                       placeholder="!@#$%^&*()_+-=[]{}|;:,.<>?"
+                       value="!@#$%^&*()_+-=[]{}|;:,.<>?"
+                       maxlength="64">
+                <button type="button" class="reset-btn" id="resetBtn">Reset</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Generated Password</label>
+            <div class="password-output" id="passwordOutput">
+                <span id="passwordText">Click "Generate Password" to create a secure password</span>
+                <div class="copy-feedback" id="copyFeedback">Copied!</div>
+            </div>
+            <div class="strength-indicator" id="strengthBar"></div>
+            <div class="strength-text" id="strengthText"></div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="btn btn-primary" id="generateBtn">Generate Password</button>
+            <button type="button" class="btn btn-secondary" id="copyBtn">Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <div class="copyright">
+        Created by <a href="https://quantumwave.ca" target="_blank" rel="noopener">Quantumwave.ca</a> <span id="currentYear"></span>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // Configuration
+            const CONFIG = Object.freeze({
+                MIN_LENGTH: 4,
+                MAX_LENGTH: 128,
+                MAX_SYMBOLS: 64,
+                RATE_LIMIT: 100,
+                MAX_RETRIES: 10,
+                CLEAR_TIMEOUT: 300000
+            });
+
+            // Character sets
+            const CHARSET = Object.freeze({
+                UPPER: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                LOWER: 'abcdefghijklmnopqrstuvwxyz',
+                DIGIT: '0123456789'
+            });
+
+            const ALLOWED_SYMBOLS = Object.freeze(new Set('!@#$%^&*()_+-=[]{}|;:,.<>?/~`'));
+            const DEFAULT_SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+            // Strength levels
+            const STRENGTH_LEVELS = Object.freeze([
+                { class: 'strength-weak', text: 'Very Weak', color: '#dc2626' },
+                { class: 'strength-weak', text: 'Weak', color: '#f56565' },
+                { class: 'strength-fair', text: 'Fair', color: '#ed8936' },
+                { class: 'strength-good', text: 'Good', color: '#ecc94b' },
+                { class: 'strength-strong', text: 'Strong', color: '#48bb78' },
+                { class: 'strength-very-strong', text: 'Very Strong', color: '#38a169' },
+                { class: 'strength-very-strong', text: 'Excellent', color: '#2f855a' }
+            ]);
+
+            // Regex patterns
+            const REGEX = Object.freeze({
+                hasLower: /[a-z]/,
+                hasUpper: /[A-Z]/,
+                hasDigit: /[0-9]/,
+                hasSpecial: /[^a-zA-Z0-9]/
+            });
+
+            // State
+            let lastGenTime = 0;
+            let isGenerating = false;
+            let clearTimer = null;
+            let elements = {};
+            let userHasClearedField = false;
+
+            // Secure random generation
+            function getSecureRandom(max) {
+                if (max <= 0 || max > 256) return 0;
+
+                if (!window.crypto?.getRandomValues) {
+                    return Math.floor(Math.random() * max);
+                }
+
+                const maxValid = Math.floor(256 / max) * max;
+
+                for (let attempts = 0; attempts < CONFIG.MAX_RETRIES; attempts++) {
+                    try {
+                        const array = new Uint8Array(1);
+                        window.crypto.getRandomValues(array);
+                        const value = array[0];
+
+                        if (value < maxValid) return value % max;
+                    } catch (e) {
+                        continue;
+                    }
+                }
+
+                return Math.floor(Math.random() * max);
+            }
+
+            // Cache DOM elements
+            function cacheElements() {
+                const ids = [
+                    'length', 'lengthDisplay', 'uppercase', 'lowercase',
+                    'numbers', 'symbols', 'customSymbols', 'passwordText',
+                    'strengthBar', 'strengthText', 'passwordOutput',
+                    'copyFeedback', 'generateBtn', 'copyBtn', 'resetBtn', 'currentYear'
+                ];
+
+                for (const id of ids) {
+                    const el = document.getElementById(id);
+                    if (el?.nodeType === 1) elements[id] = el;
+                }
+            }
+
+            // Safe text setting
+            function setTextContent(element, text) {
+                if (element && typeof text === 'string') {
+                    try {
+                        element.textContent = text;
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            // Set current year
+            function updateCurrentYear() {
+                if (elements.currentYear) {
+                    const currentYear = new Date().getFullYear();
+                    setTextContent(elements.currentYear, String(currentYear));
+                }
+            }
+
+            // Input validation with duplicate removal
+            function validateInput(input, type) {
+                if (typeof input !== 'string') {
+                    return type === 'length' ? 16 : '';
+                }
+
+                if (type === 'length') {
+                    const num = parseInt(input, 10);
+                    return isNaN(num) ? 16 :
+                           num < CONFIG.MIN_LENGTH ? CONFIG.MIN_LENGTH :
+                           num > CONFIG.MAX_LENGTH ? CONFIG.MAX_LENGTH : num;
+                }
+
+                if (type === 'symbols') {
+                    const seen = new Set();
+                    let result = '';
+                    const maxLen = Math.min(input.length, CONFIG.MAX_SYMBOLS);
+
+                    for (let i = 0; i < maxLen; i++) {
+                        const char = input[i];
+                        if (ALLOWED_SYMBOLS.has(char) && !seen.has(char)) {
+                            seen.add(char);
+                            result += char;
+                        }
+                    }
+                    return result;
+                }
+
+                return input.slice(0, 1000);
+            }
+
+            // ENHANCED: Rate limiting with better tracking
+            function canGenerate() {
+                const now = Date.now();
+                if (now - lastGenTime < CONFIG.RATE_LIMIT) return false;
+                lastGenTime = now;
+                return true;
+            }
+
+            // Check if displayed text is a valid password
+            function isValidPassword(text) {
+                return text &&
+                       typeof text === 'string' &&
+                       text.length >= CONFIG.MIN_LENGTH &&
+                       text !== 'Click "Generate Password" to create a secure password' &&
+                       !text.includes('Select at least') &&
+                       !text.includes('Enter some special') &&
+                       !text.includes('Error') &&
+                       !text.includes('failed') &&
+                       !text.includes('Generation failed');
+            }
+
+            // Check if current displayed text is an error message
+            function isErrorMessage(text) {
+                return text && (
+                    text.includes('Select at least') ||
+                    text.includes('Enter some special') ||
+                    text.includes('Error') ||
+                    text.includes('failed') ||
+                    text.includes('Generation failed') ||
+                    text.includes('Password too short')
+                );
+            }
+
+            // ENHANCED: Better placeholder management
+            function updatePlaceholder() {
+                if (!elements.customSymbols) return;
+
+                const currentValue = elements.customSymbols.value;
+                const hasValue = currentValue.length > 0;
+
+                // Show placeholder only when field is empty and user hasn't explicitly cleared it
+                if (!hasValue && !userHasClearedField) {
+                    elements.customSymbols.placeholder = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                } else if (!hasValue && userHasClearedField) {
+                    elements.customSymbols.placeholder = '';
+                } else {
+                    elements.customSymbols.placeholder = '';
+                }
+            }
+
+            // ENHANCED: Copy button state management
+            function updateCopyButtonState() {
+                if (!elements.copyBtn || !elements.passwordText) return;
+
+                const displayedText = elements.passwordText.textContent;
+                const isValidPass = isValidPassword(displayedText);
+                const isError = isErrorMessage(displayedText);
+
+                if (isError) {
+                    elements.copyBtn.disabled = true;
+                    elements.copyBtn.title = 'Generate a password first';
+                } else {
+                    elements.copyBtn.disabled = false;
+                    elements.copyBtn.title = '';
+                }
+            }
+
+            // Memory cleanup
+            function schedulePasswordClear() {
+                if (clearTimer) {
+                    clearTimeout(clearTimer);
+                }
+                clearTimer = setTimeout(() => {
+                    const displayedText = elements.passwordText?.textContent;
+                    if (isValidPassword(displayedText)) {
+                        setTextContent(elements.passwordText, 'Password cleared from memory');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                    }
+                    clearTimer = null;
+                }, CONFIG.CLEAR_TIMEOUT);
+            }
+
+            // Password generation
+            function generatePassword() {
+                if (isGenerating || !canGenerate()) return;
+
+                isGenerating = true;
+
+                try {
+                    if (!elements.length || !elements.passwordText) {
+                        setTextContent(elements.passwordText, 'Error: Required elements not found');
+                        updateCopyButtonState();
+                        return;
+                    }
+
+                    const config = {
+                        length: validateInput(elements.length.value, 'length'),
+                        useUppercase: Boolean(elements.uppercase?.checked),
+                        useLowercase: Boolean(elements.lowercase?.checked),
+                        useNumbers: Boolean(elements.numbers?.checked),
+                        useSymbols: Boolean(elements.symbols?.checked),
+                        customSymbols: validateInput(elements.customSymbols?.value || '', 'symbols')
+                    };
+
+                    // Check if any character type is selected
+                    const hasAnyType = config.useUppercase || config.useLowercase || config.useNumbers || config.useSymbols;
+
+                    if (!hasAnyType) {
+                        setTextContent(elements.passwordText, 'Select at least one character type.');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                        return;
+                    }
+
+                    // Special case: if symbols is checked but no custom symbols provided
+                    if (config.useSymbols && !config.customSymbols) {
+                        setTextContent(elements.passwordText, 'Enter some special characters.');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                        return;
+                    }
+
+                    // Build character pools
+                    const pools = [];
+                    if (config.useUppercase) pools.push(CHARSET.UPPER);
+                    if (config.useLowercase) pools.push(CHARSET.LOWER);
+                    if (config.useNumbers) pools.push(CHARSET.DIGIT);
+                    if (config.useSymbols && config.customSymbols) pools.push(config.customSymbols);
+
+                    if (!pools.length) {
+                        setTextContent(elements.passwordText, 'Select at least one character type.');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                        return;
+                    }
+
+                    if (pools.length > config.length) {
+                        setTextContent(elements.passwordText, 'Password too short for selected character types');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                        return;
+                    }
+
+                    // Generate password
+                    const password = new Array(config.length);
+                    let position = 0;
+
+                    // Required characters first
+                    for (const pool of pools) {
+                        if (position >= config.length || !pool.length) break;
+                        password[position++] = pool[getSecureRandom(pool.length)];
+                    }
+
+                    // Build combined character set
+                    let allChars = '';
+                    for (const pool of pools) allChars += pool;
+
+                    // Fill remaining positions
+                    for (let i = position; i < config.length; i++) {
+                        password[i] = allChars[getSecureRandom(allChars.length)];
+                    }
+
+                    // Shuffle using Fisher-Yates
+                    for (let i = config.length - 1; i > 0; i--) {
+                        const j = getSecureRandom(i + 1);
+                        if (j < i) {
+                            const temp = password[i];
+                            password[i] = password[j];
+                            password[j] = temp;
+                        }
+                    }
+
+                    const finalPassword = password.join('');
+                    setTextContent(elements.passwordText, finalPassword);
+                    updateStrengthIndicator(finalPassword);
+                    updateCopyButtonState();
+                    schedulePasswordClear();
+
+                } catch (error) {
+                    setTextContent(elements.passwordText, 'Generation failed. Please try again.');
+                    updateCopyButtonState();
+                } finally {
+                    isGenerating = false;
+                }
+            }
+
+            // Strength calculation with stable layout
+            function updateStrengthIndicator(password) {
+                if (!elements.strengthBar || !elements.strengthText) return;
+
+                if (!password) {
+                    elements.strengthBar.className = 'strength-indicator';
+                    setTextContent(elements.strengthText, '');
+                    return;
+                }
+
+                let score = 0;
+                const len = password.length;
+
+                if (len >= 8) score++;
+                if (len >= 12) score++;
+                if (len >= 16) score++;
+                if (REGEX.hasLower.test(password)) score++;
+                if (REGEX.hasUpper.test(password)) score++;
+                if (REGEX.hasDigit.test(password)) score++;
+                if (REGEX.hasSpecial.test(password)) score++;
+
+                const level = STRENGTH_LEVELS[Math.min(score, STRENGTH_LEVELS.length - 1)];
+
+                elements.strengthBar.className = `strength-indicator ${level.class}`;
+                setTextContent(elements.strengthText, level.text);
+
+                try {
+                    elements.strengthText.style.color = level.color;
+                } catch (e) {
+                    // Ignore style errors
+                }
+            }
+
+            // ENHANCED: Copy function with better error handling
+            async function copyPassword() {
+                const displayedText = elements.passwordText?.textContent;
+
+                // If error is showing, don't auto-generate - let user do it manually
+                if (isErrorMessage(displayedText)) {
+                    return;
+                }
+
+                // If no valid password is displayed, generate one first
+                if (!isValidPassword(displayedText)) {
+                    generatePassword();
+                    return;
+                }
+
+                try {
+                    if (navigator.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(displayedText);
+                    } else {
+                        // Fallback for older browsers
+                        const textarea = document.createElement('textarea');
+                        textarea.value = displayedText;
+                        textarea.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+                        textarea.setAttribute('readonly', '');
+
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        textarea.setSelectionRange(0, displayedText.length);
+
+                        const success = document.execCommand('copy');
+                        document.body.removeChild(textarea);
+
+                        if (!success) throw new Error('Copy failed');
+                    }
+
+                    showCopyFeedback();
+
+                } catch (error) {
+                    alert('Failed to copy password. Please select and copy manually.');
+                }
+            }
+
+            // Copy feedback
+            function showCopyFeedback() {
+                if (elements.passwordOutput && elements.copyFeedback) {
+                    elements.passwordOutput.classList.add('copied');
+                    elements.copyFeedback.classList.add('show');
+
+                    setTimeout(() => {
+                        elements.passwordOutput?.classList.remove('copied');
+                        elements.copyFeedback?.classList.remove('show');
+                    }, 2000);
+                }
+            }
+
+            // Reset function
+            function resetSpecialCharacters() {
+                if (elements.customSymbols) {
+                    elements.customSymbols.value = DEFAULT_SYMBOLS;
+                    userHasClearedField = false;
+                    updatePlaceholder();
+
+                    // Clear error message completely
+                    const currentText = elements.passwordText?.textContent;
+                    if (currentText && isErrorMessage(currentText)) {
+                        setTextContent(elements.passwordText, '');
+                        updateStrengthIndicator('');
+                        updateCopyButtonState();
+                    }
+                }
+            }
+
+            // Event listeners
+            function initializeEventListeners() {
+                if (elements.length && elements.lengthDisplay) {
+                    elements.length.addEventListener('input', function() {
+                        const value = validateInput(this.value, 'length');
+                        setTextContent(elements.lengthDisplay, String(value));
+                        this.value = String(value);
+                    });
+                }
+
+                // Auto-generate for these controls
+                const autoGenerateIds = ['length', 'uppercase', 'lowercase', 'numbers', 'symbols'];
+                for (const id of autoGenerateIds) {
+                    if (elements[id]) {
+                        elements[id].addEventListener('change', generatePassword);
+                    }
+                }
+
+                // FIXED: Custom symbols input with error clearing
+                if (elements.customSymbols) {
+                    elements.customSymbols.addEventListener('input', function() {
+                        const originalValue = this.value;
+                        const validated = validateInput(originalValue, 'symbols');
+
+                        if (originalValue !== validated) {
+                            const cursorPos = this.selectionStart;
+                            this.value = validated;
+                            const newPos = Math.min(cursorPos, validated.length);
+                            this.setSelectionRange(newPos, newPos);
+                        }
+
+                        // FIXED: Clear error message when user enters valid characters
+                        const currentDisplayText = elements.passwordText?.textContent;
+                        if (currentDisplayText && isErrorMessage(currentDisplayText)) {
+                            // If user has entered valid characters, clear the error
+                            if (validated.length > 0) {
+                                setTextContent(elements.passwordText, '');
+                                updateStrengthIndicator('');
+                                updateCopyButtonState();
+                            }
+                        }
+
+                        // Track if user manually cleared the field
+                        if (validated === '' && originalValue === '') {
+                            userHasClearedField = true;
+                        } else if (validated.length > 0) {
+                            // User typed something valid, reset the cleared flag
+                            userHasClearedField = false;
+                        }
+
+                        updatePlaceholder();
+                        updateCopyButtonState();
+                    });
+                }
+
+                if (elements.generateBtn) elements.generateBtn.addEventListener('click', generatePassword);
+                if (elements.copyBtn) elements.copyBtn.addEventListener('click', copyPassword);
+                if (elements.resetBtn) elements.resetBtn.addEventListener('click', resetSpecialCharacters);
+
+                // Cleanup listeners
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && clearTimer) {
+                        clearTimeout(clearTimer);
+                        clearTimer = null;
+                    }
+                });
+
+                window.addEventListener('beforeunload', () => {
+                    if (clearTimer) {
+                        clearTimeout(clearTimer);
+                        clearTimer = null;
+                    }
+                });
+            }
+
+            // Initialize
+            function initialize() {
+                try {
+                    cacheElements();
+                    updateCurrentYear();
+                    initializeEventListeners();
+                    updatePlaceholder();
+                    updateCopyButtonState();
+                    generatePassword();
+                } catch (error) {
+                    console.error('Initialization failed');
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initialize);
+            } else {
+                initialize();
+            }
+            
+        })();
+    </script>
+</body>
+</html>
